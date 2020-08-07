@@ -12,8 +12,10 @@ for root, dirs, files in os.walk(w_dir):
             residual_files.append(os.path.join(root, file))
 
 for file in residual_files:
+    iterations = pd.read_csv(file, skiprows = 1, delimiter='\s+')['#']
     data = pd.read_csv(file, skiprows=1, delimiter='\s+').iloc[:, 1:].shift(+1, axis=1).drop(["Time"], axis=1)
-    plot = data.plot(logy=True, figsize=(15, 5))
+    data = data.set_index(iterations)
+    plot = data.plot( logy=True, figsize=(15, 5))
     fig = plot.get_figure()
     ax = plt.gca()
     ax.legend(loc='upper right')
