@@ -7,9 +7,11 @@ w_dir = pathlib.Path.cwd()
 
 residual_files = []
 for root, dirs, files in os.walk(w_dir):
-    for file in files:
-        if file.endswith(".dat"):
-            residual_files.append(os.path.join(root, file))
+	for file in files:
+		if file.startswith("residuals") and file.endswith(".dat"):
+			p = os.path.join(root, file)
+			residual_files.append(p)
+			print(p)
 
 for file in residual_files:
     iterations = pd.read_csv(file, skiprows = 1, delimiter='\s+')['#']
