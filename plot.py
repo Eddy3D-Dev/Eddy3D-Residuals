@@ -23,6 +23,7 @@ for file in residual_files:
     ax.legend(loc='upper right')
     ax.set_xlabel("Iterations")
     ax.set_ylabel("Residuals")
+    ax.set_ylim(1e-7, 1)
     wind_dir = str(file).split('\\')[-5]
     iteration = str(file).split('\\')[-2]
     plt.savefig( wind_dir+ "_" + iteration + "_residuals.png", dpi=600)
