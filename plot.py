@@ -1,6 +1,7 @@
 import math
 import os
 import pathlib
+import sys
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -17,6 +18,10 @@ for root, dirs, files in os.walk(w_dir):
             p = os.path.join(root, file)
             residual_files.append(p)
             print(p)
+
+if len(residual_files) == 0:
+    print("No files found.")
+    sys.exit()
 
 min = 1
 max_iter = 0
