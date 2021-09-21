@@ -59,8 +59,18 @@ for file in tqdm(residual_files):
     ax.set_ylabel("Residuals")
     ax.set_ylim(min, 1)
     ax.set_xlim(0, max_iter)
-    wind_dir = str(file).split('\\')[-5]
-    iteration = str(file).split('\\')[-2]
+    # Try if this was written out by Eddy3D
+    wind_dir = ""
+    iteration = ""
+
+    try:
+        wind_dir = str(file).split('\\')[-5]
+        iteration = str(file).split('\\')[-2]
+    except:
+        print("This was probably not written by Eddy3D. Assuming default names...")
+        wind_dir = "Dir"
+        iteration = "Iter"
+
     plt.savefig(wind_dir + "_" + iteration + "_residuals.png", dpi=600)
     plt.close()
 
