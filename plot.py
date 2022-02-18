@@ -35,9 +35,21 @@ def roundup(x):
     return int(math.ceil(x / 100.0)) * 100
 
 
+def pre_parse(file):
+    raw_data = pd.read_csv(file, skiprows=1, delimiter='\s+')
+    iterations = raw_data['#']
+    data = raw_data.iloc[:, 1:].shift(+1, axis=1).drop(["Time"], axis=1)
+    data = data.set_index(iterations)
+    
+    return data, iterations
+
+
+
+
 for file in residual_files:
-    iterations = pd.read_csv(file, skiprows=1, delimiter='\s+')['#']
-    data = pd.read_csv(file, skiprows=1, delimiter='\s+').iloc[:, 1:].shift(+1, axis=1).drop(["Time"], axis=1)
+
+    data, iterations = pre_parse(file)
+    
     min_i = math.pow(10, orderOfMagnitude(data.min().min()))
     if min_i < min and min_i > 0:
         min = min_i
@@ -48,9 +60,9 @@ for file in residual_files:
 print("Exporting files...")
 
 for file in tqdm(residual_files):
-    iterations = pd.read_csv(file, skiprows=1, delimiter='\s+')['#']
-    data = pd.read_csv(file, skiprows=1, delimiter='\s+').iloc[:, 1:].shift(+1, axis=1).drop(["Time"], axis=1)
-    data = data.set_index(iterations)
+
+    data, iterations = pre_parse(file)
+    
     plot = data.plot(logy=True, figsize=(15, 5))
     fig = plot.get_figure()
     ax = plt.gca()
