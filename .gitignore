@@ -129,3 +129,4 @@ dmypy.json
 
 
 *.png
+.vscode/settings.json
