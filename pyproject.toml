@@ -1,0 +1,106 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openfoam-residuals"
+description = "A Python interface to parse and plot OpenFOAM residuals"
+readme = "README.md"
+requires-python = ">=3.7"
+authors = [{name = "Patrick Kastner", email = "patrick.kastner@gmail.com"}]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "pandas>=2,<3",
+    "numpy>=1,<3",
+    "typing-extensions>=4,<5; python_version<'3.14'",
+]
+
+dynamic = ["version"]
+
+[dependency-groups]
+lint = ["ruff"]
+typing = [
+    "mypy>=1,<2",
+]
+test = [
+    "pytest>=7,<9",
+    "pytest-asyncio>=0.21,<0.27",
+    "pytest-cov",
+    "scipy>=1,<2",
+]
+docs = [
+    "ruff",
+    "sphinx>=5,<9",
+    "sphinx_rtd_theme",
+]
+dev = [
+    {include-group = "lint"},
+    {include-group = "typing"},
+    {include-group = "test"},
+    {include-group = "docs"},
+]
+
+[project.optional-dependencies]
+docs = [
+    "ruff",
+    "sphinx>=5,<9",
+    "sphinx_rtd_theme",
+]
+
+[project.urls]
+Homepage = "https://github.com/Eddy3D-Dev/Eddy3D-Residuals/"
+Repository = "https://github.com/Eddy3D-Dev/Eddy3D-Residuals/"
+Documentation = "https://github.com/Eddy3D-Dev/Eddy3D-Residuals/"
+
+[tool.hatch.version]
+path = "eddy3d_residuals/__init__.py"
+
+[tool.mypy]
+packages = [
+    "eddy3d_residuals",
+    "tests",
+]
+strict = true
+
+[tool.ruff.lint]
+extend-select = ["ALL"]
+extend-ignore = [
+    "ANN401",
+    "ARG004",
+    "C901",
+    "COM812",
+    "E501",
+    "ISC001",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+    "PLR2004",
+    "PYI041",
+    "S101",
+    "S603",
+    "SLF001",
+    "TID252",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
