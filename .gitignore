@@ -130,3 +130,6 @@ dmypy.json
 
 *.png
 .vscode/settings.json
+.DS_Store
+eddy3d-residuals/.DS_Store
+eddy3d-residuals/tests/.DS_Store
