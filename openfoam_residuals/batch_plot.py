@@ -1,12 +1,8 @@
-import math
-import os
 import pathlib
 import sys
 
-import matplotlib.pyplot as plt
-import pandas as pd
-from tqdm import tqdm
 from openfoam_residuals import filesystem as fs
+from openfoam_residuals import plot as pl
 
 w_dir = pathlib.Path.cwd().parent / "tests" / "files"
 
@@ -20,5 +16,5 @@ if len(residual_files) == 0:
 min_val, max_iter = fs.find_min_and_max_iteration(residual_files)
 
 print("Exporting files...")
-fs.export_files(residual_files, min_val, max_iter)
+pl.export_files(residual_files, min_val, max_iter)
 print("Done.")

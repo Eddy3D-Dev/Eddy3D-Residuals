@@ -1,37 +1,39 @@
 import math
-import os
-import pathlib
-import sys
+from pathlib import Path
 
 import matplotlib.pyplot as plt
-import pandas as pd
-from tqdm import tqdm
+
+import openfoam_residuals.filesystem as fs
+
 
 def order_of_magnitude(number):
     return math.floor(math.log(number, 10))
 
+
 def roundup(x):
     return int(math.ceil(x / 100.0)) * 100
 
-def pre_parse(file):
-    raw_data = pd.read_csv(file, skiprows=1, delimiter='\s+')
-    iterations = raw_data['#']
-    data = raw_data.iloc[:, 1:].shift(+1, axis=1).drop(["Time"], axis=1)
-    data = data.set_index(iterations)
-    
-    return data, iterations
 
-def find_min_and_max_iteration(residual_files):
-    min_val = 1
-    max_iter = 0
+def export_files(residual_files, min_val, max_iter, output_dir=None):
+    """Export PNG plots for all residual files."""
+    if output_dir is not None:
+        output_dir = Path(output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+    else:
+        output_dir = Path.cwd()
 
-    for file in residual_files:
-        data, iterations = pre_parse(file)
-        min_i = math.pow(10, order_of_magnitude(data.min().min()))
-        if min_i < min_val and min_i > 0:
-            min_val = min_i
-        max_iter_i = data.index.max()
-        if max_iter_i > max_iter and max_iter_i > 0:
-            max_iter = roundup(max_iter_i)
-    
-    return min_val, max_iter
+    for idx, filepath in enumerate(residual_files):
+        data, _ = fs.pre_parse(filepath)
+        ax = data.plot(logy=True, figsize=(15, 5))
+        ax.legend(loc='upper right')
+        ax.set_xlabel("Iterations")
+        ax.set_ylabel("Residuals")
+        ax.set_ylim(min_val, 1)
+        ax.set_xlim(0, max_iter)
+        file_parts = Path(filepath).parts
+        wind_dir = file_parts[-4] if len(file_parts) >= 4 else "Dir"
+        iteration = file_parts[-2] if len(file_parts) >= 2 else "Iter"
+        out_name = f"{idx}_{wind_dir}_{iteration}_residuals.png"
+        out_path = output_dir / out_name
+        plt.savefig(out_path, dpi=600)
+        plt.close()
