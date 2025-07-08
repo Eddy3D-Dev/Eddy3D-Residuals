@@ -2,6 +2,7 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+
 [project]
 name = "openfoam-residuals"
 description = "A Python interface to parse and plot OpenFOAM residuals"
@@ -43,7 +44,6 @@ typing = [
 ]
 test = [
     "pytest>=7,<9",
-    "pytest-asyncio>=0.21,<0.27",
     "pytest-cov",
     "scipy>=1,<2",
 ]
@@ -67,16 +67,16 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Eddy3D-Dev/Eddy3D-Residuals/"
-Repository = "https://github.com/Eddy3D-Dev/Eddy3D-Residuals/"
-Documentation = "https://github.com/Eddy3D-Dev/Eddy3D-Residuals/"
+Homepage = "https://github.com/Eddy3D-Dev/OpenFOAM-Residuals/"
+Repository = "https://github.com/Eddy3D-Dev/OpenFOAM-Residuals/"
+Documentation = "https://github.com/Eddy3D-Dev/OpenFOAM-Residuals/"
 
 [tool.hatch.version]
-path = "eddy3d_residuals/__init__.py"
+path = "openfoam_residuals/__init__.py"
 
 [tool.mypy]
 packages = [
-    "eddy3d_residuals",
+    "openfoam_residuals",
     "tests",
 ]
 strict = true
