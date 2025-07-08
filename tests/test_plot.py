@@ -1,29 +1,65 @@
+# tests/test_batch_plotting.py
+from __future__ import annotations
+
+import pathlib
 import unittest
+from typing import ClassVar
 
 import openfoam_residuals.filesystem as fs
 import openfoam_residuals.plot as pl
 
 
 class TestBatchPlotting(unittest.TestCase):
+    """
+    Verify that ``export_files`` discovers residual*.dat files,
+    exports them, and generates the expected number of PNGs.
+    """
 
-    def test_batch_plot(self):
-        import pathlib
+    TEST_DIR: ClassVar[pathlib.Path]
+    RESIDUAL_FILES: ClassVar[list[pathlib.Path]]
+    EXPECTED_PNGS: ClassVar[int] = 14        # adjust when your fixture changes
 
-        test_dir = pathlib.Path(__file__).parent  # always the tests/ folder
-        w_dir = test_dir / "files"
-        residual_files = fs.find_residual_files(w_dir)
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Locate fixture files once for the entire class."""
+        cls.TEST_DIR = pathlib.Path(__file__).parent
+        work_dir = cls.TEST_DIR / "files"
 
-        assert residual_files, f"No residual files found in {w_dir}"
+        cls.RESIDUAL_FILES = fs.find_residual_files(work_dir)
+        # Fail fast if the fixture is missing
+        cls.assertTrue(
+            cls.RESIDUAL_FILES, f"No residual files found in {work_dir}"
+        )
 
-        min_val, max_iter = fs.find_min_and_max_iteration(residual_files)
-        # Ensure pl.export_files exports to the tests directory
-        pl.export_files(residual_files, min_val, max_iter, output_dir=test_dir)
+        min_val, max_iter = fs.find_min_and_max_iteration(cls.RESIDUAL_FILES)
+        pl.export_files(
+            cls.RESIDUAL_FILES,
+            min_val,
+            max_iter,
+            output_dir=cls.TEST_DIR,
+        )
 
-        # Always search for PNG files in the tests directory
-        png_files = list(test_dir.glob("*.png"))
-        expected_files = 15
-        assert len(png_files) == expected_files, f"Expected {expected_files} PNG files, found {len(png_files)} in {test_dir}"
+    @classmethod
+    def tearDownClass(cls) -> None:
+        """Clean up generated artefacts after all tests have run."""
+        for png in cls.TEST_DIR.glob("*.png"):
+            png.unlink(missing_ok=True)
+
+    # ───────── actual assertions ─────────────────────────────────────────
+    def test_png_export_count(self) -> None:
+        """The exporter should create the expected number of PNG files."""
+        pngs = list(self.TEST_DIR.glob("*.png"))
+        self.assertEqual(
+            len(pngs),
+            self.EXPECTED_PNGS,
+            f"Expected {self.EXPECTED_PNGS} PNGs, found {len(pngs)} in {self.TEST_DIR}",
+        )
+
+    def test_png_paths_exist(self) -> None:
+        """Every file returned by glob should physically exist on disk."""
+        for png in self.TEST_DIR.glob("*.png"):
+            self.assertTrue(png.exists(), f"File {png} is missing")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":  # pragma: no cover
     unittest.main()
