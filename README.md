@@ -2,7 +2,7 @@
 
 # OpenFOAM-Residuals
 
-Python script to plot residual data in OpenFOAM case folders written out by Eddy3D (<www.eddy3d.com>), an airflow and microclimate simulations plugin for Rhino and Grasshopper.
+Python script to plot residual data in OpenFOAM case folders written out by [Eddy3D](www.eddy3d.com), an airflow and microclimate simulations plugin for Rhino and Grasshopper.
 
 # How to use this
 
