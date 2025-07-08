@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
+import io
 
 from openfoam_residuals import plot as orp
 
@@ -26,9 +27,24 @@ def find_min_and_max_iteration(residual_files):
 
 
 def pre_parse(file):
-    raw_data = pd.read_csv(file, skiprows=1, delimiter='\s+')
-    iterations = raw_data['#']
-    data = raw_data.iloc[:, 1:].shift(+1, axis=1).drop(["Time"], axis=1)
+    """Parse OpenFOAM residuals file and return formatted data"""
+
+    # Read file and strip all '#' characters line‑by‑line
+    with open(file, "r", encoding="utf-8") as f:
+        cleaned_text = f.read().replace('#', '')
+
+    # Parse cleaned data
+    raw_data = pd.read_csv(
+        io.StringIO(cleaned_text),
+        skiprows=[0],
+        sep="\s+",
+        engine="python",
+        na_values="N/A",
+        on_bad_lines='error'
+    )
+    iterations = raw_data['Time']
+    data = raw_data.drop(["Time"], axis=1)
     data = data.set_index(iterations)
+    data = data.dropna(axis=1, how="all")  # keeps only columns that have at least one non-NaN
 
     return data, iterations

@@ -1,5 +1,6 @@
 import math
 from pathlib import Path
+import numpy as np
 
 import matplotlib.pyplot as plt
 
@@ -7,6 +8,8 @@ import openfoam_residuals.filesystem as fs
 
 
 def order_of_magnitude(number):
+    if number is np.nan:
+        return 0
     return math.floor(math.log(number, 10))
 
 
@@ -35,5 +38,6 @@ def export_files(residual_files, min_val, max_iter, output_dir=None):
         iteration = file_parts[-2] if len(file_parts) >= 2 else "Iter"
         out_name = f"{idx}_{wind_dir}_{iteration}_residuals.png"
         out_path = output_dir / out_name
+        print(f"Plotting {out_name}")
         plt.savefig(out_path, dpi=600)
         plt.close()
