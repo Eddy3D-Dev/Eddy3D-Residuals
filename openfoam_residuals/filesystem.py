@@ -1,7 +1,7 @@
+import io
 from pathlib import Path
 
 import pandas as pd
-import io
 
 from openfoam_residuals import plot as orp
 

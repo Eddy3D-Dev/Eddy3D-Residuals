@@ -21,7 +21,8 @@ class TestBatchPlotting(unittest.TestCase):
 
         # Always search for PNG files in the tests directory
         png_files = list(test_dir.glob("*.png"))
-        assert len(png_files) == 15, f"Expected 11 PNG files, found {len(png_files)} in {test_dir}"
+        expected_files = 15
+        assert len(png_files) == expected_files, f"Expected {expected_files} PNG files, found {len(png_files)} in {test_dir}"
 
 
 if __name__ == '__main__':
