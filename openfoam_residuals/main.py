@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Parse and plot OpenFOAM residual files.
 
@@ -13,6 +12,7 @@ python main.py -w ~/cases/cavity
 # Multiple cases, verbose, skip PNGs
 python main.py -w case1 -w case2 -vv --no-plots
 """
+
 from __future__ import annotations
 
 import argparse
@@ -24,12 +24,12 @@ from typing import Iterable
 from openfoam_residuals import filesystem as fs
 from openfoam_residuals import plot as pl
 
-
 _LOG = logging.getLogger(__name__)
 
 
 # ───────────────────────────── CLI parsing ──────────────────────────────
 def parse_args() -> argparse.Namespace:
+    """Parse command-line arguments for the residual plotting CLI."""
     parser = argparse.ArgumentParser(
         description="Locate OpenFOAM residual files, "
         "compute min/max iterations and export plots/data."
@@ -76,11 +76,13 @@ def parse_args() -> argparse.Namespace:
 
 # ───────────────────────────── helpers ──────────────────────────────────
 def configure_logging(verbosity: int) -> None:
+    """Configure logging level based on verbosity."""
     level = logging.WARNING - min(verbosity, 2) * 10
     logging.basicConfig(level=level, format="%(levelname)s │ %(message)s")
 
 
 def gather_from_dirs(dirs: Iterable[str | Path]) -> list[Path]:
+    """Find all residual files in the provided directories."""
     residual_files: list[Path] = []
     for work_dir in map(Path, dirs):
         if not work_dir.exists():
@@ -95,6 +97,7 @@ def gather_from_dirs(dirs: Iterable[str | Path]) -> list[Path]:
 
 # ───────────────────────────── main routine ─────────────────────────────
 def main() -> None:
+    """Parse, compute, and export residual plots."""
     args = parse_args()
     configure_logging(args.verbose)
 
@@ -127,12 +130,12 @@ def main() -> None:
         max_iter,
         output_dir=out_dir,
     )
-    _LOG.info("Done – results in %s", out_dir)
+    _LOG.info("Done - results in %s", out_dir)
 
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        _LOG.warning("Interrupted by user – aborting.")
+        _LOG.warning("Interrupted by user - aborting.")
         sys.exit(130)

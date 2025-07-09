@@ -1,4 +1,5 @@
-# tests/test_batch_plotting.py
+"""Tests for batch plotting of OpenFOAM residual files."""
+
 from __future__ import annotations
 
 import pathlib
@@ -10,14 +11,11 @@ import openfoam_residuals.plot as pl
 
 
 class TestBatchPlotting(unittest.TestCase):
-    """
-    Verify that ``export_files`` discovers residual*.dat files,
-    exports them, and generates the expected number of PNGs.
-    """
+    """Verify that ``export_files`` discovers residual*.dat files, exports, and generates expected number of PNGs."""
 
     TEST_DIR: ClassVar[pathlib.Path]
     RESIDUAL_FILES: ClassVar[list[pathlib.Path]]
-    EXPECTED_PNGS: ClassVar[int] = 14        # adjust when your fixture changes
+    EXPECTED_PNGS: ClassVar[int] = 14  # adjust when your fixture changes
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -27,9 +25,7 @@ class TestBatchPlotting(unittest.TestCase):
 
         cls.RESIDUAL_FILES = fs.find_residual_files(work_dir)
         # Fail fast if the fixture is missing
-        cls.assertTrue(
-            cls.RESIDUAL_FILES, f"No residual files found in {work_dir}"
-        )
+        assert cls.RESIDUAL_FILES, f"No residual files found in {work_dir}"
 
         min_val, max_iter = fs.find_min_and_max_iteration(cls.RESIDUAL_FILES)
         pl.export_files(
@@ -49,16 +45,14 @@ class TestBatchPlotting(unittest.TestCase):
     def test_png_export_count(self) -> None:
         """The exporter should create the expected number of PNG files."""
         pngs = list(self.TEST_DIR.glob("*.png"))
-        self.assertEqual(
-            len(pngs),
-            self.EXPECTED_PNGS,
-            f"Expected {self.EXPECTED_PNGS} PNGs, found {len(pngs)} in {self.TEST_DIR}",
+        assert len(pngs) == self.EXPECTED_PNGS, (
+            f"Expected {self.EXPECTED_PNGS} PNGs, found {len(pngs)} in {self.TEST_DIR}"
         )
 
     def test_png_paths_exist(self) -> None:
         """Every file returned by glob should physically exist on disk."""
         for png in self.TEST_DIR.glob("*.png"):
-            self.assertTrue(png.exists(), f"File {png} is missing")
+            assert png.exists(), f"File {png} is missing"
 
 
 if __name__ == "__main__":  # pragma: no cover

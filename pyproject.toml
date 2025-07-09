@@ -7,7 +7,7 @@ build-backend = "hatchling.build"
 name = "openfoam-residuals"
 description = "A Python interface to parse and plot OpenFOAM residuals"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 authors = [{name = "Patrick Kastner", email = "patrick.kastner@gmail.com"}]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -17,7 +17,6 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: POSIX",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -32,6 +31,7 @@ classifiers = [
 dependencies = [
     "pandas>=2,<3",
     "numpy>=1,<3",
+    "matplotlib>=3",
     "typing-extensions>=4,<5; python_version<'3.14'",
 ]
 
@@ -44,13 +44,10 @@ typing = [
 ]
 test = [
     "pytest>=7,<9",
-    "pytest-cov",
-    "scipy>=1,<2",
+    "pytest-cov"
 ]
 docs = [
     "ruff",
-    "sphinx>=5,<9",
-    "sphinx_rtd_theme",
 ]
 dev = [
     {include-group = "lint"},
@@ -62,8 +59,6 @@ dev = [
 [project.optional-dependencies]
 docs = [
     "ruff",
-    "sphinx>=5,<9",
-    "sphinx_rtd_theme",
 ]
 
 [project.urls]
@@ -80,6 +75,10 @@ packages = [
     "tests",
 ]
 strict = true
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 40
 
 [tool.ruff.lint]
 extend-select = ["ALL"]
